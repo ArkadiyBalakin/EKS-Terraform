@@ -1,6 +1,7 @@
 name = EKS-Cluster-22a
 region = "us-east-1"
 
+#Create
 tfstate:
 	cd backend && terraform init && terraform plan && terraform apply
 
