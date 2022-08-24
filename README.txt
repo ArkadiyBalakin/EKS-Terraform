@@ -31,7 +31,7 @@ make backend
 -- Create Dynamodb table for lock tf.state file
 
 make plan
-- This command will cd into production file and run terraform init $ terraform plan --var-file="dev.tfvars". Initialize provider and will plan to create resources in AWS
+- This command will cd into production file and run terraform init $ terraform plan. Initialize provider and will plan to create resources in AWS
 
 make apply
 - Create VPC and components
@@ -56,22 +56,14 @@ make apply
 --- AmazonEC2ContainerRegistryReadOnly
 -- Security Group for the Worker Nodes
 -- Launch template
--- Autoscaling Group with mixed On-Demand-20% & Spot-80% instances
+-- Autoscaling Group with mixed On-Demand-25% & Spot-75% instances
 
 NOTES:
 
-- In this project for the variables i used .tfvars instead of regular variables. But regular variable file also provided with default parameters. If .tfvars file has not been passed when running the apply command, default values from variables.tf file will be applied
+- In this project for the variables i used .tfvars instead of regular variables. But regular variable file also provided with default parameters. If .tfvars file has not been passed when running the apply command, default values from variables.tf file can be applied
 
 CLEAN-UP:
 
 - make rm-backend - delete everything that was created in backend
 
 - make destroy - delete everything that was created in apply
-
-ISSUES:
-
-- In Terraform AWS Provider Version 4 upgrade versioning, server_side_encryption_configuration arguments are read-only. We cannot pass like argument anymore. They are have to be created as resource
-
-- Also make sure that S3 remote backend with Dynamodb table for locking creates first
-
-- Issue with creating S3 bucket with Dynamodb table. Make sure you didn't specify any credentials or profiles in terraform code as those will override your local environment credentials. Created script to fetch local environment credentials. This script have to be run first to avoid 403 Acess Denied error
