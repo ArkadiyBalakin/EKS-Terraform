@@ -2,15 +2,18 @@ region       = "us-east-1"
 cluster_name = "EKS-Cluster-22a"
 
 # EKS Cluster
-cluster_version = 1.23
+# cluster_version = 1.23
 
 # Autoscaling Group
 spot_price       = "0.0464"
 desired_capacity = 3
 max_size         = 4
 min_size         = 2
-instance_type    = "t3.medium"                               #(for launch template)
-instance_types   = ["t2.medium", "t3a.medium", "t3.medium"] # uses by the autoscaling group when creating worker nodes
+instance_type    = "t2.micro"                               #(for launch template)
+instance_types   = ["t3.medium", "t2.medium"] # uses by the autoscaling group when creating worker nodes
+
+# Launch Tamplates
+volume_size      = 20
 
 # VPC
 cidr_block     = "10.0.0.0/16"

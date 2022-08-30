@@ -27,11 +27,11 @@ variable "cluster_name" {
   #default     = "EKS_Cluster_22a"
   description = "Name of the cluster"
 }
-variable "cluster_version" {
-  type        = string
-  #default     = "1.23"
-  description = "EKS cluster version"
-}
+# variable "cluster_version" {
+#   type        = string
+#   #default     = "1.23"
+#   description = "EKS cluster version"
+# }
 
 # Worker Nodes
 variable "spot_price" {
@@ -56,11 +56,17 @@ variable "min_size" {
 }
 variable "instance_type" {
   type        = string
-  #default     = "t2.medium"
+  #default     = "t2.micro"
   description = "Launch templates instance type"
 }
 variable "instance_types" {
   type        = list(any)
-  #default     = ["t2.medium", "t3a.medium", "t3.medium"]
+  #default     = ["t2.medium", "t3.medium"]
   description = "Instance types for the Autoscaling Group"
+}
+
+variable "volume_size" {
+  type        = string
+  #default     = "20"
+  description = "Launch templates volume size"
 }

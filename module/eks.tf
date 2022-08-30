@@ -35,7 +35,7 @@ resource "aws_iam_role_policy_attachment" "AmazonEKSServicePolicy" {
 resource "aws_eks_cluster" "eks-22a" {
   name     = var.cluster_name
   role_arn = aws_iam_role.eks-22a.arn
-  version  = var.cluster_version
+  # version  = var.cluster_version
 
   vpc_config {
     subnet_ids         = aws_subnet.public-22a.*.id

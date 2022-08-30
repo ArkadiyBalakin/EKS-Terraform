@@ -68,7 +68,7 @@ resource "aws_security_group_rule" "ingress-cluster-https" {
 }
 
 resource "aws_security_group_rule" "ingress-cluster-https-31000" {
-  description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
+  description              = "Allow communication to worker with internet"
   from_port                = 31000
   protocol                 = "tcp"
   security_group_id        = aws_security_group.worker-22a.id
@@ -78,7 +78,7 @@ resource "aws_security_group_rule" "ingress-cluster-https-31000" {
 }
 
 resource "aws_security_group_rule" "ingress-cluster-https-80" {
-  description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
+  description              = "Allow communication to worker with internet"
   from_port                = 80
   protocol                 = "tcp"
   security_group_id        = aws_security_group.worker-22a.id
@@ -88,7 +88,7 @@ resource "aws_security_group_rule" "ingress-cluster-https-80" {
 }
 
 resource "aws_security_group_rule" "ingress-cluster-https-22" {
-  description              = "Allow worker Kubelets and pods to receive communication from the cluster control plane"
+  description              = "Allow SSH to worker"
   from_port                = 22
   protocol                 = "tcp"
   security_group_id        = aws_security_group.worker-22a.id
@@ -118,17 +118,6 @@ resource "aws_security_group_rule" "cluster-ingress-node-https" {
 }
 
 ###############        Worker Nodes        #################
-
-data "aws_ami" "eks-worker" { # AMI image for worker nodes
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-${aws_eks_cluster.eks-22a.version}-v*"]
-  }
-
-  most_recent = true
-  owners      = ["602401143452"] # Default Amazon EKS AMI Account ID
-}
-
 locals {
   node-userdata = <<USERDATA
 #!/bin/bash
@@ -143,13 +132,19 @@ resource "aws_launch_template" "worker-22a" {
   }
   image_id               = data.aws_ami.eks-worker.id
   instance_type          = var.instance_type
-  key_name               = data.aws_key_pair.key-22a.key_name
+  key_name               = data.aws_key_pair.ssh-key-22a.key_name
   name_prefix            = var.cluster_name
   vpc_security_group_ids = [aws_security_group.worker-22a.id]
   user_data              = base64encode(local.node-userdata)
 
   lifecycle {
     create_before_destroy = true
+  }
+   block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = var.volume_size
+    }
   }
 }
 
@@ -162,7 +157,7 @@ resource "aws_autoscaling_group" "workers-22a" {
 
   mixed_instances_policy {
     instances_distribution {
-      on_demand_base_capacity                  = 1
+      on_demand_base_capacity                  = 0
       on_demand_percentage_above_base_capacity = 25 # this means everything else will be 75% spot and 25% onDemand (we have fixed capacity of 1 onDemand)
       spot_allocation_strategy                 = "lowest-price"
       spot_max_price                           = var.spot_price
@@ -178,9 +173,6 @@ resource "aws_autoscaling_group" "workers-22a" {
       }
       override {
         instance_type = var.instance_types[1]
-      }
-      override {
-        instance_type = var.instance_types[2]
       }
     }
   }
