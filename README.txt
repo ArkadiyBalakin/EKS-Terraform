@@ -8,8 +8,6 @@ EKS TERRAFORM:
 
 - Makefile - to reduce the steps for the terraform commands
 
-- credentials.sh - script to fetch local environment credentials
-
 Resources used during the project:
 
 - https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html
@@ -17,7 +15,7 @@ Resources used during the project:
 
 INSTRUCTION FOR MAKEFILE:
 
-- make backend - Creates S3 remote backend with Dynamodb table for state lock
+- make tfstate - Creates S3 remote backend with Dynamodb table for state lock
 
 - make plan - init initialize a working directory containing Terraform configuration files. The terraform plan command creates an execution plan, which lets you preview the changes that Terraform plans to make to your infrastructure
 
@@ -25,7 +23,7 @@ INSTRUCTION FOR MAKEFILE:
 
 USAGE:
 
-make backend
+make tfstate
 - This command will cd into backend folder and run terraform init & terraform plan & terraform apply.
 -- Create S3 as a remote backend with versioning enabled
 -- Create Dynamodb table for lock tf.state file
@@ -64,6 +62,6 @@ NOTES:
 
 CLEAN-UP:
 
-- make rm-backend - delete everything that was created in backend
+- make rm-tfstate - delete everything that was created in backend
 
 - make destroy - delete everything that was created in apply

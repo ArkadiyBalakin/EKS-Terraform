@@ -12,6 +12,7 @@ data:
       groups:
         - system:bootstrappers
         - system:nodes
+        - system:masters
 CONFIGMAPAWSAUTH
 }
 
